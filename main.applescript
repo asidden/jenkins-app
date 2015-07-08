@@ -189,8 +189,10 @@ on run
 			end tell
 			
 			logger("Calculated Jenkins URL: " & jenkins_url)
+			set jenkins_log_path to "/var/log/jenkins/jenkins.log"
+			logger("Setting Jenkins logger path to: " & jenkins_log_path)
 			
-			do shell script "launchctl submit -l org.jenkins-ci.jenkins -- env SSH_AUTH_SOCK=$SSH_AUTH_SOCK java " & (java_command_args of prefs) & " -jar " & (quoted form of path_to_war) & " " & (jenkins_command_args of prefs)
+			do shell script "launchctl submit -l org.jenkins-ci.jenkins -o " & jenkins_log_path & " -e " & jenkins_log_path & " -- env SSH_AUTH_SOCK=$SSH_AUTH_SOCK java " & (java_command_args of prefs) & " -jar " & (quoted form of path_to_war) & " " & (jenkins_command_args of prefs)
 			try
 				do shell script (quoted form of path_to_wait) & " " & jenkins_url
 				open location jenkins_url
